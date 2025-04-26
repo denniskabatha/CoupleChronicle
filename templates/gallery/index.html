@@ -77,11 +77,11 @@
 <!-- Hero Section -->
 <section class="hero text-center">
     <div class="container">
-        <h1 class="display-4 fw-bold">Photo Gallery</h1>
-        <p class="lead">Capturing our moments, one photo at a time.</p>
+        <h1 class="display-4 fw-bold">Photo & Video Gallery</h1>
+        <p class="lead">Capturing our moments, one memory at a time.</p>
         {% if current_user.is_authenticated %}
             <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">
-                <i class="bi bi-cloud-upload"></i> Upload New Photo
+                <i class="bi bi-cloud-upload"></i> Upload New Media
             </a>
         {% endif %}
     </div>
@@ -93,7 +93,19 @@
             {% for photo in photos.items %}
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="gallery-item">
-                        <img src="{{ url_for('static', filename=photo.filename) }}" alt="{{ photo.title or 'Gallery Photo' }}">
+                        {% if photo.media_type == 'video' %}
+                            <div class="position-relative" style="height: 220px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000;">
+                                <video width="100%" height="100%" style="object-fit: cover;" controls poster="{{ url_for('static', filename=photo.filename) }}.jpg">
+                                    <source src="{{ url_for('static', filename=photo.filename) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <span class="position-absolute" style="top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 5px;">
+                                    <i class="bi bi-camera-video"></i> Video
+                                </span>
+                            </div>
+                        {% else %}
+                            <img src="{{ url_for('static', filename=photo.filename) }}" alt="{{ photo.title or 'Gallery Photo' }}">
+                        {% endif %}
                         <div class="overlay">
                             <div class="overlay-content">
                                 {% if photo.title %}
@@ -106,7 +118,7 @@
                                 {% if current_user.is_authenticated and (current_user.is_admin or photo.user_id == current_user.id) %}
                                     <div class="mt-3">
                                         <form action="{{ url_for('gallery.delete', id=photo.id) }}" method="post" class="d-inline" onclick="event.stopPropagation();">
-                                            <button type="submit" class="btn btn-sm btn-outline-light" onclick="return confirm('Are you sure you want to delete this photo?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-light" onclick="return confirm('Are you sure you want to delete this media?')">
                                                 <i class="bi bi-trash"></i> Delete
                                             </button>
                                         </form>

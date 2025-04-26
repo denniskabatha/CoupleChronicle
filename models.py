@@ -65,6 +65,7 @@ class Photo(db.Model):
     title = db.Column(db.String(120))
     description = db.Column(db.Text)
     filename = db.Column(db.String(255), nullable=False)
+    media_type = db.Column(db.String(10), default='image')  # 'image' or 'video'
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     

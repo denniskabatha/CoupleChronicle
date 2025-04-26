@@ -5,17 +5,18 @@ from datetime import datetime
 from flask import current_app
 
 
-def save_image(file, folder='uploads', resize=None):
+def save_media(file, folder='uploads', resize=None, media_type='image'):
     """
-    Save uploaded image file with a random filename
+    Save uploaded media file (image or video) with a random filename
     
     Args:
         file: The uploaded file object
         folder: The subfolder to save to within static folder
-        resize: A tuple (width, height) to resize the image
+        resize: A tuple (width, height) to resize the image (only for images)
+        media_type: 'image' or 'video'
         
     Returns:
-        The filename of the saved image
+        The filename of the saved media file
     """
     random_hex = secrets.token_hex(8)
     _, file_ext = os.path.splitext(file.filename)
@@ -27,8 +28,8 @@ def save_image(file, folder='uploads', resize=None):
     
     file_path = os.path.join(save_path, filename)
     
-    # Optionally resize the image
-    if resize:
+    # For images, optionally resize
+    if media_type == 'image' and resize and file_ext.lower() in ['.jpg', '.jpeg', '.png', '.gif']:
         image = Image.open(file)
         image.thumbnail(resize)
         image.save(file_path)
@@ -36,6 +37,21 @@ def save_image(file, folder='uploads', resize=None):
         file.save(file_path)
     
     return os.path.join(folder, filename)
+    
+# Keep the original function for backward compatibility
+def save_image(file, folder='uploads', resize=None):
+    """
+    Save uploaded image file with a random filename (legacy function)
+    
+    Args:
+        file: The uploaded file object
+        folder: The subfolder to save to within static folder
+        resize: A tuple (width, height) to resize the image
+        
+    Returns:
+        The filename of the saved image
+    """
+    return save_media(file, folder, resize, 'image')
 
 
 def format_date(date):

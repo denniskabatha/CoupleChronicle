@@ -53,9 +53,13 @@ class DateIdeaForm(FlaskForm):
 class PhotoUploadForm(FlaskForm):
     title = StringField('Title', validators=[Optional(), Length(max=120)])
     description = TextAreaField('Description', validators=[Optional()])
-    photo = FileField('Photo', validators=[
+    media_type = SelectField('Media Type', choices=[
+        ('image', 'Image'),
+        ('video', 'Video')
+    ], default='image')
+    photo = FileField('Media File', validators=[
         DataRequired(),
-        FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')
+        FileAllowed(['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'wmv'], 'Images and videos only!')
     ])
 
 
