@@ -61,7 +61,7 @@
                         <div class="mt-3">
                             <a href="{{ url_for('blog.post', slug=post.slug) }}" class="btn btn-outline-primary">Read More</a>
                             
-                            {% if current_user.is_authenticated and current_user.is_admin %}
+                            {% if current_user.is_authenticated and (current_user.is_admin or post.user_id == current_user.id) %}
                                 <a href="{{ url_for('blog.edit', slug=post.slug) }}" class="btn btn-outline-secondary ms-2">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
@@ -122,7 +122,7 @@
             {% else %}
                 <div class="text-center py-5">
                     <p>No blog posts available{% if current_category %} in this category{% endif %}.</p>
-                    {% if current_user.is_authenticated and current_user.is_admin %}
+                    {% if current_user.is_authenticated %}
                         <a href="{{ url_for('blog.create') }}" class="btn btn-primary">Create Your First Post</a>
                     {% endif %}
                 </div>
@@ -131,14 +131,19 @@
         
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <!-- Admin Actions -->
-            {% if current_user.is_authenticated and current_user.is_admin %}
+            <!-- User Actions -->
+            {% if current_user.is_authenticated %}
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Admin Actions</h5>
+                        <h5 class="mb-0">{% if current_user.is_admin %}Admin{% else %}User{% endif %} Actions</h5>
                     </div>
                     <div class="card-body">
-                        <a href="{{ url_for('blog.create') }}" class="btn btn-primary d-block">Create New Post</a>
+                        <a href="{{ url_for('blog.create') }}" class="btn btn-primary d-block mb-2">
+                            <i class="bi bi-pencil-square"></i> Create New Blog Post
+                        </a>
+                        <a href="{{ url_for('gallery.upload') }}" class="btn btn-success d-block">
+                            <i class="bi bi-camera"></i> Upload Image/Video
+                        </a>
                     </div>
                 </div>
             {% endif %}

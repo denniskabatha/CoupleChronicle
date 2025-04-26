@@ -44,9 +44,7 @@ def post(slug):
 @blog_bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    if not current_user.is_admin:
-        abort(403)
-        
+    # Allow any authenticated user to create a blog post
     form = BlogPostForm()
     
     if form.validate_on_submit():
@@ -74,10 +72,12 @@ def create():
 @blog_bp.route('/<slug>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(slug):
-    if not current_user.is_admin:
+    post = BlogPost.query.filter_by(slug=slug).first_or_404()
+    
+    # Check if user is admin or the author of the post
+    if not current_user.is_admin and post.user_id != current_user.id:
         abort(403)
         
-    post = BlogPost.query.filter_by(slug=slug).first_or_404()
     form = BlogPostForm(obj=post)
     
     if form.validate_on_submit():
@@ -101,10 +101,12 @@ def edit(slug):
 @blog_bp.route('/<slug>/delete', methods=['POST'])
 @login_required
 def delete(slug):
-    if not current_user.is_admin:
+    post = BlogPost.query.filter_by(slug=slug).first_or_404()
+    
+    # Check if user is admin or the author of the post
+    if not current_user.is_admin and post.user_id != current_user.id:
         abort(403)
         
-    post = BlogPost.query.filter_by(slug=slug).first_or_404()
     db.session.delete(post)
     db.session.commit()
     
