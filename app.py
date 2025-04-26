@@ -35,7 +35,7 @@ app.jinja_env.filters['event_color'] = get_event_color
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///couple_blog.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static/uploads")
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max upload
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100MB max upload
 
 # Add context processor for datetime
 @app.context_processor
