@@ -26,8 +26,9 @@ def upload():
         )
         
         # Save uploaded photo
-        filename = save_image(form.photo.data, folder='uploads/gallery', resize=(1200, 900))
-        photo.filename = filename
+        if form.photo.data and hasattr(form.photo.data, 'filename'):
+            filename = save_image(form.photo.data, folder='uploads/gallery', resize=(1200, 900))
+            photo.filename = filename
         
         db.session.add(photo)
         db.session.commit()

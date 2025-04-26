@@ -59,7 +59,7 @@ def create():
         )
         
         # Save image if uploaded
-        if form.featured_image.data:
+        if form.featured_image.data and hasattr(form.featured_image.data, 'filename'):
             featured_image = save_image(form.featured_image.data, folder='uploads/blog', resize=(1200, 800))
             post.featured_image = featured_image
         
