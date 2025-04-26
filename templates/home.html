@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Love Journey - Couple Blog & Date Night Planner{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Our Love Journey</h1>
+        <p class="lead">Documenting our adventures, sharing date ideas, and creating memories together.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('blog.index') }}" class="btn btn-primary px-4 py-2">Read Our Blog</a>
+            <a href="{{ url_for('date_planner.index') }}" class="btn btn-outline-primary px-4 py-2">Find Date Ideas</a>
+        </div>
+    </div>
+</section>
+
+<!-- Couple Story Section -->
+<section class="container mb-5">
+    <div class="couple-story animate-on-scroll">
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <p>"Love is not just looking at each other, it's looking in the same direction." This quote by Antoine de Saint-Exupéry perfectly captures our journey together. We've been creating memories, embarking on adventures, and growing together through life's ups and downs. This blog is our way of documenting our story and helping other couples plan amazing date nights and experiences.</p>
+                <div class="text-end">
+                    <p class="mb-0 fw-bold">— Sarah & Michael</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container mb-5">
+    <div class="section-heading">
+        <h2>What We Offer</h2>
+        <p>Explore our site to find everything you need to plan special moments and document your own love journey.</p>
+    </div>
+    
+    <div class="row features-list">
+        <div class="col-md-4 mb-4">
+            <div class="feature-item animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="bi bi-journal-richtext"></i>
+                </div>
+                <h4>Couple Blog</h4>
+                <p>Read about our experiences, relationship insights, and travel adventures that might inspire your own journey.</p>
+                <a href="{{ url_for('blog.index') }}" class="btn btn-sm btn-outline-primary">Read Blog</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-item animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="bi bi-calendar-heart"></i>
+                </div>
+                <h4>Date Night Planner</h4>
+                <p>Discover unique date ideas for every budget, location, and preference to keep your relationship exciting.</p>
+                <a href="{{ url_for('date_planner.index') }}" class="btn btn-sm btn-outline-primary">Find Date Ideas</a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="feature-item animate-on-scroll">
+                <div class="feature-icon">
+                    <i class="bi bi-camera"></i>
+                </div>
+                <h4>Photo Gallery</h4>
+                <p>Browse through our favorite moments and find inspiration for capturing your own special memories.</p>
+                <a href="{{ url_for('gallery.index') }}" class="btn btn-sm btn-outline-primary">View Gallery</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Blog Posts -->
+<section class="container mb-5">
+    <div class="section-heading">
+        <h2>Latest From Our Blog</h2>
+        <p>Read about our recent adventures and relationship insights.</p>
+    </div>
+    
+    <div class="row">
+        {% if recent_posts %}
+            {% for post in recent_posts %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 animate-on-scroll">
+                        {% if post.featured_image %}
+                            <img src="{{ url_for('static', filename=post.featured_image) }}" class="card-img-top" alt="{{ post.title }}">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                                <i class="bi bi-journal-text" style="font-size: 3rem; color: #ccc;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            {% if post.category %}
+                                <span class="badge bg-secondary mb-2">{{ post.category }}</span>
+                            {% endif %}
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text text-muted small">{{ post.created_at.strftime('%B %d, %Y') }}</p>
+                            <p class="card-text">{{ post.content|striptags|truncate(100) }}</p>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <a href="{{ url_for('blog.post', slug=post.slug) }}" class="btn btn-sm btn-outline-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <p>No blog posts yet. Check back soon!</p>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <a href="{{ url_for('blog.create') }}" class="btn btn-primary">Create Your First Post</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('blog.index') }}" class="btn btn-outline-primary">View All Posts</a>
+    </div>
+</section>
+
+<!-- Photo Gallery Preview -->
+<section class="container mb-5">
+    <div class="section-heading">
+        <h2>Memories in Photos</h2>
+        <p>A glimpse into our photo gallery.</p>
+    </div>
+    
+    <div class="row">
+        {% if featured_photos %}
+            {% for photo in featured_photos %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="gallery-item animate-on-scroll">
+                        <img src="{{ url_for('static', filename=photo.filename) }}" alt="{{ photo.title or 'Gallery Photo' }}">
+                        <div class="overlay">
+                            <div class="overlay-content">
+                                {% if photo.title %}
+                                    <h5 class="overlay-title">{{ photo.title }}</h5>
+                                {% endif %}
+                                {% if photo.description %}
+                                    <p class="overlay-desc">{{ photo.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <p>No photos in the gallery yet. Add some memories!</p>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload Your First Photo</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('gallery.index') }}" class="btn btn-outline-primary">View Full Gallery</a>
+    </div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="container mb-5">
+    <div class="section-heading">
+        <h2>Upcoming Events</h2>
+        <p>Special occasions and dates we're looking forward to.</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% if upcoming_events %}
+                <div class="list-group animate-on-scroll">
+                    {% for event in upcoming_events %}
+                        <div class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                            <div class="d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: {{ event.event_type|event_color }}; color: white; border-radius: 50%;">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">{{ event.title }}</h6>
+                                    <p class="mb-0 opacity-75">
+                                        {% if event.all_day %}
+                                            {{ event.start_date.strftime('%B %d, %Y') }} (All day)
+                                        {% else %}
+                                            {{ event.start_date.strftime('%B %d, %Y at %I:%M %p') }}
+                                        {% endif %}
+                                    </p>
+                                    {% if event.location %}
+                                        <small class="text-muted"><i class="bi bi-geo-alt"></i> {{ event.location }}</small>
+                                    {% endif %}
+                                </div>
+                                <small class="text-nowrap text-muted">
+                                    {% set days = (event.start_date - now).days %}
+                                    {% if days == 0 %}
+                                        Today!
+                                    {% elif days == 1 %}
+                                        Tomorrow
+                                    {% else %}
+                                        In {{ days }} days
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <p>No upcoming events. Plan your next special occasion!</p>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('calendar.create') }}" class="btn btn-primary">Add an Event</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('calendar.index') }}" class="btn btn-outline-primary">View Full Calendar</a>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Plan Your Next Date Night?</h2>
+            <p>Discover hundreds of creative date ideas for any budget, location, or preference.</p>
+            <a href="{{ url_for('date_planner.index') }}" class="btn btn-light btn-lg">Find Date Ideas</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Filter to get event color
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event color function - replace with server-side implementation if possible
+        function getEventColor(eventType) {
+            const colors = {
+                'anniversary': '#FF6B6B',
+                'date': '#4ECDC4',
+                'birthday': '#FFD166',
+                'special': '#9370DB',
+                'other': '#6B7A8F'
+            };
+            return colors[eventType] || '#6B7A8F';
+        }
+        
+        // Apply event colors
+        document.querySelectorAll('[data-event-type]').forEach(el => {
+            const eventType = el.dataset.eventType;
+            el.style.backgroundColor = getEventColor(eventType);
+        });
+    });
+</script>
+{% endblock %}

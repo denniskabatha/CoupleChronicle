@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Blog Post - Love Journey{% endblock %}
+
+{% block extra_css %}
+<!-- Summernote CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Edit Blog Post</h1>
+        <p class="lead">Update your blog post content and settings.</p>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('blog.edit', slug=post.slug) }}" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Title</label>
+                            {{ form.title(class="form-control", placeholder="Enter post title") }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="category" class="form-label">Category</label>
+                            {{ form.category(class="form-control") }}
+                            {% if form.category.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.category.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="featured_image" class="form-label">Featured Image</label>
+                            {% if post.featured_image %}
+                                <div class="mb-2">
+                                    <img src="{{ url_for('static', filename=post.featured_image) }}" class="img-fluid rounded" alt="{{ post.title }}" style="max-height: 200px;">
+                                    <p class="text-muted small">Current featured image. Upload a new one to replace it.</p>
+                                </div>
+                            {% endif %}
+                            {{ form.featured_image(class="form-control") }}
+                            {% if form.featured_image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.featured_image.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div id="imagePreview" class="mt-2" style="display: none;"></div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="content" class="form-label">Content</label>
+                            {{ form.content(class="form-control", id="summernote") }}
+                            {% if form.content.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.content.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4 form-check">
+                            {{ form.published(class="form-check-input") }}
+                            <label class="form-check-label" for="published">Published</label>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('blog.post', slug=post.slug) }}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Summernote JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            placeholder: 'Write your post content here...',
+            height: 300,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+        
+        // Image preview
+        $('#featured_image').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').html('<img src="' + e.target.result + '" class="img-fluid rounded" alt="Image Preview">').show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}

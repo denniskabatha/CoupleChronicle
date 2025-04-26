@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Love Journey{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Admin Dashboard</h1>
+        <p class="lead">Manage your blog posts, date ideas, photos, and events.</p>
+    </div>
+</section>
+
+<section class="container py-5">
+    <!-- Stats Overview -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-pink">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ blog_count }}</h4>
+                    <p>Blog Posts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-blue">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ date_idea_count }}</h4>
+                    <p>Date Ideas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-yellow">
+                    <i class="bi bi-camera"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ photo_count }}</h4>
+                    <p>Photos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-purple">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>{{ event_count }}</h4>
+                    <p>Events</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('blog.create') }}" class="btn btn-outline-primary d-block">
+                                <i class="bi bi-plus-lg"></i> New Blog Post
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('date_planner.create') }}" class="btn btn-outline-primary d-block">
+                                <i class="bi bi-plus-lg"></i> New Date Idea
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('gallery.upload') }}" class="btn btn-outline-primary d-block">
+                                <i class="bi bi-plus-lg"></i> Upload Photo
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('calendar.create') }}" class="btn btn-outline-primary d-block">
+                                <i class="bi bi-plus-lg"></i> Add Event
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Blog Posts -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Recent Blog Posts</h4>
+                    <a href="{{ url_for('blog.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_posts %}
+                        <div class="table-responsive admin-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in recent_posts %}
+                                        <tr>
+                                            <td>{{ post.title }}</td>
+                                            <td>{{ post.created_at.strftime('%m/%d/%Y') }}</td>
+                                            <td>
+                                                <a href="{{ url_for('blog.post', slug=post.slug) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{{ url_for('blog.edit', slug=post.slug) }}" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center py-3">No blog posts yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Messages -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Recent Messages</h4>
+                    <a href="{{ url_for('contact.messages') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_messages %}
+                        <div class="table-responsive admin-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in recent_messages %}
+                                        <tr>
+                                            <td>{{ message.name }}</td>
+                                            <td>{{ message.subject }}</td>
+                                            <td>{{ message.created_at.strftime('%m/%d/%Y') }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#messageModal{{ message.id }}">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Message Modal -->
+                                        <div class="modal fade" id="messageModal{{ message.id }}" tabindex="-1" aria-labelledby="messageModalLabel{{ message.id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="messageModalLabel{{ message.id }}">{{ message.subject }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p><strong>From:</strong> {{ message.name }} ({{ message.email }})</p>
+                                                        <p><strong>Date:</strong> {{ message.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                                        <hr>
+                                                        <p>{{ message.message }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <a href="mailto:{{ message.email }}" class="btn btn-primary">Reply via Email</a>
+                                                        <form action="{{ url_for('contact.delete_message', id=message.id) }}" method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this message?')">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center py-3">No messages yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Upcoming Events</h4>
+                    <a href="{{ url_for('calendar.index') }}" class="btn btn-sm btn-outline-primary">View Calendar</a>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_events %}
+                        <div class="table-responsive admin-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Location</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for event in upcoming_events %}
+                                        <tr>
+                                            <td>{{ event.title }}</td>
+                                            <td>
+                                                {% if event.all_day %}
+                                                    {{ event.start_date.strftime('%m/%d/%Y') }} (All day)
+                                                {% else %}
+                                                    {{ event.start_date.strftime('%m/%d/%Y %I:%M %p') }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <span class="badge rounded-pill" style="background-color: 
+                                                    {% if event.event_type == 'anniversary' %}#FF6B6B
+                                                    {% elif event.event_type == 'date' %}#4ECDC4
+                                                    {% elif event.event_type == 'birthday' %}#FFD166
+                                                    {% elif event.event_type == 'special' %}#9370DB
+                                                    {% else %}#6B7A8F{% endif %}">
+                                                    {{ event.event_type|title }}
+                                                </span>
+                                            </td>
+                                            <td>{{ event.location or 'N/A' }}</td>
+                                            <td>
+                                                <a href="{{ url_for('calendar.edit', id=event.id) }}" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-center py-3">No upcoming events.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,475 @@
+/* Global Styles */
+:root {
+    /* Romantic color palette */
+    --primary-color: #FF6B6B;      /* Coral Red */
+    --secondary-color: #4ECDC4;    /* Turquoise */
+    --accent-color: #FFD166;       /* Yellow */
+    --light-color: #F7F9FB;        /* Off-white */
+    --dark-color: #2F3542;         /* Dark Gray */
+    --gray-color: #747D8C;         /* Medium Gray */
+    --soft-pink: #FDA7DF;          /* Soft Pink */
+    --lavender: #D6A2E8;           /* Lavender */
+    
+    /* Font Families */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Lato', sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--dark-color);
+    background-color: var(--light-color);
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+    color: var(--dark-color);
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--dark-color);
+    text-decoration: none;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #e05f5f;
+    border-color: #e05f5f;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #3db8b0;
+    border-color: #3db8b0;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.navbar-nav .nav-link {
+    color: var(--dark-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    position: relative;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-color);
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 80%;
+    left: 10%;
+}
+
+.navbar-nav .active > .nav-link {
+    color: var(--primary-color);
+}
+
+.navbar-nav .active > .nav-link::after {
+    width: 80%;
+    left: 10%;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #fef5f5;
+    padding: 5rem 0;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://cdn.jsdelivr.net/gh/feathericons/feather@4.29.0/icons/heart.svg');
+    background-repeat: repeat;
+    background-size: 100px;
+    opacity: 0.03;
+    z-index: 0;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 80%;
+    margin: 0 auto 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2rem;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+}
+
+.card-footer {
+    background-color: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Blog Styles */
+.blog-post {
+    margin-bottom: 4rem;
+}
+
+.blog-post .featured-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.blog-post .post-meta {
+    color: var(--gray-color);
+    margin-bottom: 1rem;
+}
+
+.blog-post .post-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+}
+
+.blog-post .post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* Gallery Styles */
+.gallery-item {
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.gallery-item img {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    width: 100%;
+    height: 0;
+    transition: .5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.gallery-item:hover .overlay {
+    height: 100%;
+}
+
+.gallery-item .overlay-content {
+    color: white;
+}
+
+.gallery-item .overlay-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Date Planner Styles */
+.filter-section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.date-idea-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.date-idea-card .card-body {
+    flex: 1;
+}
+
+.date-idea-card .card-img-top {
+    height: 180px;
+}
+
+.date-idea-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.budget-low {
+    background-color: #A3F7BF;
+    color: #05386B;
+}
+
+.budget-medium {
+    background-color: #FFD166;
+    color: #5D4037;
+}
+
+.budget-high {
+    background-color: #FDA7DF;
+    color: #5D4037;
+}
+
+/* Calendar Styles */
+.calendar-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.fc-theme-standard .fc-list, .fc-theme-standard .fc-scrollgrid {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.fc-theme-standard th, .fc-theme-standard td {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.fc-button-primary {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #3db8b0 !important;
+    border-color: #3db8b0 !important;
+}
+
+.fc-button-active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Contact Form */
+.contact-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.contact-info {
+    margin-bottom: 2rem;
+}
+
+.contact-info .contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.contact-info .contact-icon {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.contact-info .contact-icon i {
+    color: white;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.social-links a {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 3rem 0 1.5rem;
+}
+
+footer h5 {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+footer .footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+footer .footer-links a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+footer .footer-links a:hover {
+    color: white;
+}
+
+footer .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1.5rem;
+    margin-top: 3rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+    
+    .blog-post .featured-image {
+        height: 250px;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+.slide-up {
+    animation: slideUp 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Date Idea - Love Journey{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">{{ title }}</h1>
+        <p class="lead">Share a creative date idea with others.</p>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form id="dateIdeaForm" method="POST" action="{{ 
+                        url_for('date_planner.edit', id=date_idea.id) if date_idea else url_for('date_planner.create') 
+                    }}" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        
+                        <div class="mb-4">
+                            <label for="title" class="form-label">Title</label>
+                            {{ form.title(class="form-control", placeholder="Enter a catchy title for your date idea") }}
+                            <div class="invalid-feedback">Please enter a title for your date idea.</div>
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="description" class="form-label">Description</label>
+                            {{ form.description(class="form-control", rows="4", placeholder="Describe your date idea in detail. What makes it special? What should couples expect?") }}
+                            <div class="invalid-feedback">Please provide a description for your date idea.</div>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="location" class="form-label">Location (Optional)</label>
+                                {{ form.location(class="form-control", placeholder="Where should this date take place?") }}
+                                {% if form.location.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.location.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="budget" class="form-label">Budget</label>
+                                {{ form.budget(class="form-control") }}
+                                {% if form.budget.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.budget.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="activity_type" class="form-label">Activity Type</label>
+                            {{ form.activity_type(class="form-control") }}
+                            {% if form.activity_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.activity_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="image" class="form-label">Image (Optional)</label>
+                            {{ form.image(class="form-control", id="image") }}
+                            <div class="form-text">Upload an image that represents this date idea. Max size: 5MB.</div>
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.image.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            
+                            {% if date_idea and date_idea.image %}
+                                <div class="mt-2">
+                                    <p class="mb-1">Current Image:</p>
+                                    <img src="{{ url_for('static', filename=date_idea.image) }}" class="img-fluid rounded" alt="{{ date_idea.title }}" style="max-height: 200px;">
+                                </div>
+                            {% endif %}
+                            
+                            <div id="imagePreview" class="mt-2" style="display: none;"></div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('date_planner.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if date_idea %}Update{% else %}Create{% endif %} Date Idea
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dateplanner.js') }}"></script>
+{% endblock %}
