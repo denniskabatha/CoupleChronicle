@@ -79,10 +79,12 @@ with app.app_context():
     # Create database tables
     db.create_all()
 
-    # Check if admin user exists, create if not
+    # Check if users exist, create if not
+    from werkzeug.security import generate_password_hash
+    
+    # Check for admin user
     admin = User.query.filter_by(username='admin').first()
     if not admin:
-        from werkzeug.security import generate_password_hash
         admin = User(
             username='admin',
             email='admin@example.com',
@@ -90,8 +92,34 @@ with app.app_context():
             is_admin=True
         )
         db.session.add(admin)
-        db.session.commit()
         logging.info("Admin user created")
+    
+    # Check for Maryann user
+    maryann = User.query.filter_by(username='Maryann').first()
+    if not maryann:
+        maryann = User(
+            username='Maryann',
+            email='maryann@example.com',
+            password_hash=generate_password_hash('njokiyunabi@'),
+            is_admin=False
+        )
+        db.session.add(maryann)
+        logging.info("Maryann user created")
+    
+    # Check for Dennis user
+    dennis = User.query.filter_by(username='Dennis').first()
+    if not dennis:
+        dennis = User(
+            username='Dennis',
+            email='dennis@example.com',
+            password_hash=generate_password_hash('kabatha123@'),
+            is_admin=False
+        )
+        db.session.add(dennis)
+        logging.info("Dennis user created")
+    
+    # Commit all users to database
+    db.session.commit()
 
 @login_manager.user_loader
 def load_user(user_id):
