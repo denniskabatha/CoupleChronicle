@@ -12,6 +12,22 @@
             <a href="{{ url_for('blog.index') }}" class="btn btn-primary px-4 py-2">Read Our Blog</a>
             <a href="{{ url_for('date_planner.index') }}" class="btn btn-outline-primary px-4 py-2">Find Date Ideas</a>
         </div>
+        
+        {% if current_user.is_authenticated %}
+        <div class="mt-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-circle"></i> Create Content
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('blog.create') }}"><i class="bi bi-pencil-square"></i> Write Blog Post</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('gallery.upload') }}"><i class="bi bi-camera"></i> Upload Photo/Video</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('date_planner.create') }}"><i class="bi bi-heart"></i> Add Date Idea</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('calendar.create') }}"><i class="bi bi-calendar-plus"></i> Schedule Event</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
 
@@ -106,7 +122,7 @@
         {% else %}
             <div class="col-12 text-center py-5">
                 <p>No blog posts yet. Check back soon!</p>
-                {% if current_user.is_authenticated and current_user.is_admin %}
+                {% if current_user.is_authenticated %}
                     <a href="{{ url_for('blog.create') }}" class="btn btn-primary">Create Your First Post</a>
                 {% endif %}
             </div>
