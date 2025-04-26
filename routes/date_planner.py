@@ -77,7 +77,7 @@ def create():
         )
         
         # Save image if uploaded
-        if form.image.data:
+        if form.image.data and hasattr(form.image.data, 'filename'):
             image = save_image(form.image.data, folder='uploads/date_ideas', resize=(800, 600))
             date_idea.image = image
         
@@ -108,7 +108,7 @@ def edit(id):
         date_idea.activity_type = form.activity_type.data
         
         # Save image if uploaded
-        if form.image.data:
+        if form.image.data and hasattr(form.image.data, 'filename'):
             image = save_image(form.image.data, folder='uploads/date_ideas', resize=(800, 600))
             date_idea.image = image
         
