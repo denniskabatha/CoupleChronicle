@@ -49,7 +49,7 @@ migrate = Migrate(app, db)
 # Set up login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'admin_login'
+login_manager.login_view = 'admin.login'
 
 # Create upload directory if it doesn't exist
 os.makedirs(os.path.join(app.root_path, "static/uploads/gallery"), exist_ok=True)
