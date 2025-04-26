@@ -4,16 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     galleryItems.forEach(item => {
         item.addEventListener('click', function() {
-            const imgSrc = this.querySelector('img').src;
-            const imgTitle = this.querySelector('.overlay-title')?.textContent || '';
-            const imgDesc = this.querySelector('.overlay-desc')?.textContent || '';
+            // Check if this is a video or an image
+            const isVideo = this.querySelector('video') !== null;
             
-            openLightbox(imgSrc, imgTitle, imgDesc);
+            if (isVideo) {
+                const videoSrc = this.querySelector('source').src;
+                const videoTitle = this.querySelector('.overlay-title')?.textContent || '';
+                const videoDesc = this.querySelector('.overlay-desc')?.textContent || '';
+                
+                openLightbox(videoSrc, videoTitle, videoDesc, 'video');
+            } else {
+                const imgSrc = this.querySelector('img').src;
+                const imgTitle = this.querySelector('.overlay-title')?.textContent || '';
+                const imgDesc = this.querySelector('.overlay-desc')?.textContent || '';
+                
+                openLightbox(imgSrc, imgTitle, imgDesc, 'image');
+            }
         });
     });
     
     // Function to open lightbox
-    function openLightbox(imgSrc, imgTitle, imgDesc) {
+    function openLightbox(mediaSrc, mediaTitle, mediaDesc, mediaType = 'image') {
         // Create the lightbox elements
         const lightbox = document.createElement('div');
         lightbox.className = 'gallery-lightbox';
@@ -27,24 +38,41 @@ document.addEventListener('DOMContentLoaded', function() {
         closeBtn.className = 'lightbox-close';
         closeBtn.innerHTML = '&times;';
         
-        // Create the image element
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        img.alt = imgTitle;
+        // Create media element (image or video)
+        let mediaElement;
+        
+        if (mediaType === 'video') {
+            mediaElement = document.createElement('video');
+            mediaElement.controls = true;
+            mediaElement.autoplay = true;
+            mediaElement.style.maxWidth = '100%';
+            mediaElement.style.maxHeight = '80vh';
+            
+            const source = document.createElement('source');
+            source.src = mediaSrc;
+            source.type = 'video/mp4';
+            
+            mediaElement.appendChild(source);
+            mediaElement.innerHTML += 'Your browser does not support the video tag.';
+        } else {
+            mediaElement = document.createElement('img');
+            mediaElement.src = mediaSrc;
+            mediaElement.alt = mediaTitle;
+        }
         
         // Create the caption elements
         const caption = document.createElement('div');
         caption.className = 'lightbox-caption';
         
-        if (imgTitle) {
+        if (mediaTitle) {
             const title = document.createElement('h4');
-            title.textContent = imgTitle;
+            title.textContent = mediaTitle;
             caption.appendChild(title);
         }
         
-        if (imgDesc) {
+        if (mediaDesc) {
             const desc = document.createElement('p');
-            desc.textContent = imgDesc;
+            desc.textContent = mediaDesc;
             caption.appendChild(desc);
         }
         
@@ -58,10 +86,17 @@ document.addEventListener('DOMContentLoaded', function() {
             nextBtn.className = 'lightbox-nav next-btn';
             nextBtn.innerHTML = '&#10095;';
             
-            // Find the current image index
-            let currentIndex = Array.from(galleryItems).findIndex(item => 
-                item.querySelector('img').src === imgSrc
-            );
+            // Find the current media index
+            let currentIndex;
+            if (mediaType === 'video') {
+                currentIndex = Array.from(galleryItems).findIndex(item => 
+                    item.querySelector('video source') && item.querySelector('video source').src === mediaSrc
+                );
+            } else {
+                currentIndex = Array.from(galleryItems).findIndex(item => 
+                    item.querySelector('img') && item.querySelector('img').src === mediaSrc
+                );
+            }
             
             // Previous button click handler
             prevBtn.addEventListener('click', function(e) {
@@ -80,30 +115,78 @@ document.addEventListener('DOMContentLoaded', function() {
             content.appendChild(prevBtn);
             content.appendChild(nextBtn);
             
-            // Update lightbox image function
+            // Update lightbox media function
             function updateLightboxImage(index) {
                 const newItem = galleryItems[index];
-                const newImgSrc = newItem.querySelector('img').src;
-                const newImgTitle = newItem.querySelector('.overlay-title')?.textContent || '';
-                const newImgDesc = newItem.querySelector('.overlay-desc')?.textContent || '';
+                const isItemVideo = newItem.querySelector('video') !== null;
                 
-                img.src = newImgSrc;
-                img.alt = newImgTitle;
-                
-                // Update caption
-                caption.innerHTML = '';
-                
-                if (newImgTitle) {
-                    const title = document.createElement('h4');
-                    title.textContent = newImgTitle;
-                    caption.appendChild(title);
+                // Remove existing media element
+                if (content.contains(mediaElement)) {
+                    content.removeChild(mediaElement);
                 }
                 
-                if (newImgDesc) {
-                    const desc = document.createElement('p');
-                    desc.textContent = newImgDesc;
-                    caption.appendChild(desc);
+                // Create new media element
+                if (isItemVideo) {
+                    const videoSrc = newItem.querySelector('source').src;
+                    const videoTitle = newItem.querySelector('.overlay-title')?.textContent || '';
+                    const videoDesc = newItem.querySelector('.overlay-desc')?.textContent || '';
+                    
+                    // Create new video element
+                    mediaElement = document.createElement('video');
+                    mediaElement.controls = true;
+                    mediaElement.autoplay = true;
+                    mediaElement.style.maxWidth = '100%';
+                    mediaElement.style.maxHeight = '80vh';
+                    
+                    const source = document.createElement('source');
+                    source.src = videoSrc;
+                    source.type = 'video/mp4';
+                    
+                    mediaElement.appendChild(source);
+                    mediaElement.innerHTML += 'Your browser does not support the video tag.';
+                    
+                    // Update caption
+                    caption.innerHTML = '';
+                    
+                    if (videoTitle) {
+                        const title = document.createElement('h4');
+                        title.textContent = videoTitle;
+                        caption.appendChild(title);
+                    }
+                    
+                    if (videoDesc) {
+                        const desc = document.createElement('p');
+                        desc.textContent = videoDesc;
+                        caption.appendChild(desc);
+                    }
+                } else {
+                    const imgSrc = newItem.querySelector('img').src;
+                    const imgTitle = newItem.querySelector('.overlay-title')?.textContent || '';
+                    const imgDesc = newItem.querySelector('.overlay-desc')?.textContent || '';
+                    
+                    // Create new image element
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = imgSrc;
+                    mediaElement.alt = imgTitle;
+                    
+                    // Update caption
+                    caption.innerHTML = '';
+                    
+                    if (imgTitle) {
+                        const title = document.createElement('h4');
+                        title.textContent = imgTitle;
+                        caption.appendChild(title);
+                    }
+                    
+                    if (imgDesc) {
+                        const desc = document.createElement('p');
+                        desc.textContent = imgDesc;
+                        caption.appendChild(desc);
+                    }
                 }
+                
+                // Add the new media element after the close button
+                content.insertBefore(mediaElement, caption);
             }
             
             // Add keyboard navigation
@@ -122,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add elements to the DOM
         content.appendChild(closeBtn);
-        content.appendChild(img);
+        content.appendChild(mediaElement);
         content.appendChild(caption);
         lightbox.appendChild(content);
         document.body.appendChild(lightbox);
