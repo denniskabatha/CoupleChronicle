@@ -38,7 +38,8 @@ def get_events():
             'borderColor': get_event_color(event.event_type),
             'description': event.description,
             'location': event.location,
-            'event_type': event.event_type
+            'event_type': event.event_type,
+            'user_id': event.user_id
         }
         
         if event.end_date:

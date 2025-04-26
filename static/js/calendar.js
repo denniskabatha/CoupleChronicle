@@ -131,9 +131,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
             
-            // Add edit and delete buttons if the user is logged in
+            // Add edit and delete buttons if the user is logged in and is either admin or event owner
             const isLoggedIn = document.body.dataset.loggedIn === 'true';
-            if (isLoggedIn) {
+            const currentUserId = parseInt(document.body.dataset.userId || '0');
+            const isAdmin = document.body.dataset.isAdmin === 'true';
+            const eventUserId = event.extendedProps.user_id;
+            
+            if (isLoggedIn && (isAdmin || currentUserId === eventUserId)) {
                 eventHTML += `
                     <div class="mt-4">
                         <a href="/calendar/${event.id}/edit" class="btn btn-outline-primary btn-sm me-2">

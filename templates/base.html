@@ -22,7 +22,14 @@
     
     {% block extra_css %}{% endblock %}
 </head>
-<body {% if current_user.is_authenticated %}data-logged-in="true"{% else %}data-logged-in="false"{% endif %}>
+<body 
+    {% if current_user.is_authenticated %}
+    data-logged-in="true" 
+    data-user-id="{{ current_user.id }}" 
+    data-is-admin="{% if current_user.is_admin %}true{% else %}false{% endif %}"
+    {% else %}
+    data-logged-in="false"
+    {% endif %}>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
