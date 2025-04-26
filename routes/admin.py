@@ -15,7 +15,9 @@ def login():
     form = LoginForm()
     
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        # Case-insensitive username lookup
+        username = form.username.data
+        user = User.query.filter(User.username.ilike(username)).first()
         
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember_me.data)
