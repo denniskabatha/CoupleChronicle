@@ -1,6 +1,7 @@
 import os
 import logging
 from datetime import datetime
+from flask_wtf.csrf import CSRFProtect
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -20,9 +21,9 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 # Create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+app.secret_key = os.environ.get("SESSION_SECRET","dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)  # needed for url_for to generate with https
-
+csrf = CSRFProtect(app)
 # Import utils for custom filters
 from utils import format_date, format_datetime, get_event_color
 
