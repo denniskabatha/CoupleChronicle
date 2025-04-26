@@ -115,7 +115,52 @@
                 ['table', ['table']],
                 ['insert', ['link', 'picture', 'video']],
                 ['view', ['fullscreen', 'codeview', 'help']]
-            ]
+            ],
+            // Properly handle video URL formatting
+            popover: {
+                video: [
+                    ['videosize', ['videoSize100', 'videoSize50', 'videoSize25']],
+                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                    ['remove', ['removeMedia']]
+                ]
+            }
+        });
+        
+        // Fix the video dialog URL glitch by implementing a custom handler
+        $(document).on('click', '.note-video-btn', function() {
+            const videoDialog = $(this).closest('.note-video-dialog');
+            const videoUrl = videoDialog.find('.note-video-url').val().trim();
+            
+            if (videoUrl) {
+                // Create a more robust URL validator
+                const isValidUrl = function(url) {
+                    try {
+                        new URL(url);
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                };
+                
+                // Only proceed if we have a valid URL
+                if (isValidUrl(videoUrl)) {
+                    // Get the Summernote instance
+                    const summernoteDom = $('#summernote');
+                    const summernote = summernoteDom.data('summernote');
+                    
+                    // Create properly formatted iframe tag (no URL glitches)
+                    const videoIframe = $('<iframe>')
+                        .attr('src', videoUrl)
+                        .attr('frameborder', 0)
+                        .attr('width', '100%')
+                        .attr('height', 360)
+                        .attr('allowfullscreen', true)
+                        .get(0);
+                    
+                    // Insert the iframe at the current cursor position
+                    summernote.invoke('editor.insertNode', videoIframe);
+                }
+            }
         });
         
         // Image preview
