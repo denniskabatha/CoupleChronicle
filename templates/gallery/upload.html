@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload Photo - Love Journey{% endblock %}
+{% block title %}Upload Media - Couple Chronicle{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
 <section class="hero text-center">
     <div class="container">
-        <h1 class="display-4 fw-bold">Upload Photo</h1>
-        <p class="lead">Add new memories to your photo gallery.</p>
+        <h1 class="display-4 fw-bold">Upload Photo or Video</h1>
+        <p class="lead">Add new memories to your gallery. Supports images and videos up to 600MB.</p>
     </div>
 </section>
 
@@ -20,7 +20,20 @@
                         {{ form.csrf_token }}
                         
                         <div class="mb-4">
-                            <label for="photo" class="form-label">Select Photo</label>
+                            <label for="media_type" class="form-label">Media Type</label>
+                            {{ form.media_type(class="form-select", id="media_type") }}
+                            {% if form.media_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.media_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="photo" class="form-label">Select File</label>
+                            <small class="text-muted d-block mb-2" id="fileHelpText">Select an image (.jpg, .jpeg, .png, .gif) or video file (.mp4, .mov, .avi, .wmv) up to 600MB</small>
                             {{ form.photo(class="form-control", id="photo") }}
                             {% if form.photo.errors %}
                                 <div class="invalid-feedback d-block">
@@ -29,7 +42,7 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <div id="photoPreview" class="mt-3 text-center" style="display: none;"></div>
+                            <div id="mediaPreview" class="mt-3 text-center" style="display: none;"></div>
                         </div>
                         
                         <div class="mb-4">
@@ -58,7 +71,7 @@
                         
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('gallery.index') }}" class="btn btn-outline-secondary">Back to Gallery</a>
-                            <button type="submit" class="btn btn-primary">Upload Photo</button>
+                            <button type="submit" class="btn btn-primary">Upload Media</button>
                         </div>
                     </form>
                 </div>
@@ -71,20 +84,71 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const mediaTypeSelect = document.getElementById('media_type');
         const photoInput = document.getElementById('photo');
-        const photoPreview = document.getElementById('photoPreview');
+        const mediaPreview = document.getElementById('mediaPreview');
+        const fileHelpText = document.getElementById('fileHelpText');
+        const submitButton = document.querySelector('button[type="submit"]');
         
-        if (photoInput && photoPreview) {
+        // Update file help text and submit button based on media type
+        function updateUIForMediaType(mediaType) {
+            if (mediaType === 'image') {
+                fileHelpText.textContent = 'Select an image file (.jpg, .jpeg, .png, .gif) up to 600MB';
+                submitButton.textContent = 'Upload Photo';
+            } else {
+                fileHelpText.textContent = 'Select a video file (.mp4, .mov, .avi, .wmv) up to 600MB';
+                submitButton.textContent = 'Upload Video';
+            }
+        }
+        
+        // Initial UI update based on default selection
+        if (mediaTypeSelect) {
+            updateUIForMediaType(mediaTypeSelect.value);
+            
+            // Listen for media type changes
+            mediaTypeSelect.addEventListener('change', function() {
+                updateUIForMediaType(this.value);
+                // Clear file input and preview when switching types
+                if (photoInput) {
+                    photoInput.value = '';
+                }
+                if (mediaPreview) {
+                    mediaPreview.style.display = 'none';
+                    mediaPreview.innerHTML = '';
+                }
+            });
+        }
+        
+        // Handle file preview
+        if (photoInput && mediaPreview) {
             photoInput.addEventListener('change', function() {
                 if (this.files && this.files[0]) {
-                    const reader = new FileReader();
+                    const file = this.files[0];
+                    const mediaType = mediaTypeSelect ? mediaTypeSelect.value : 'image';
                     
-                    reader.onload = function(e) {
-                        photoPreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" alt="Photo Preview" style="max-height: 300px;">`;
-                        photoPreview.style.display = 'block';
+                    if (mediaType === 'image') {
+                        // For image files
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            mediaPreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" alt="Image Preview" style="max-height: 300px;">`;
+                            mediaPreview.style.display = 'block';
+                        }
+                        
+                        reader.readAsDataURL(file);
+                    } else {
+                        // For video files
+                        const fileName = file.name;
+                        const fileSize = (file.size / (1024 * 1024)).toFixed(2); // Size in MB
+                        
+                        mediaPreview.innerHTML = `
+                            <div class="alert alert-info">
+                                <i class="bi bi-camera-video"></i> 
+                                <strong>Video selected:</strong> ${fileName} (${fileSize} MB)
+                            </div>
+                        `;
+                        mediaPreview.style.display = 'block';
                     }
-                    
-                    reader.readAsDataURL(this.files[0]);
                 }
             });
         }

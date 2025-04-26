@@ -175,16 +175,19 @@
         </nav>
     {% else %}
         <div class="text-center py-5">
-            <i class="bi bi-camera" style="font-size: 4rem; color: var(--gray-color);"></i>
-            <h3 class="mt-4 mb-3">No Photos Yet</h3>
-            <p class="text-muted mb-4">Start capturing your special moments and add them to the gallery.</p>
+            <div>
+                <i class="bi bi-camera" style="font-size: 3rem; color: var(--gray-color);"></i>
+                <i class="bi bi-camera-video" style="font-size: 3rem; color: var(--gray-color); margin-left: 15px;"></i>
+            </div>
+            <h3 class="mt-4 mb-3">No Media Yet</h3>
+            <p class="text-muted mb-4">Start capturing your special moments and add photos and videos to the gallery.</p>
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">
-                    <i class="bi bi-cloud-upload"></i> Upload Your First Photo
+                    <i class="bi bi-cloud-upload"></i> Upload Your First Media
                 </a>
             {% else %}
                 <a href="{{ url_for('admin.login') }}" class="btn btn-primary">
-                    <i class="bi bi-lock"></i> Login to Upload Photos
+                    <i class="bi bi-lock"></i> Login to Upload Photos & Videos
                 </a>
             {% endif %}
         </div>
